@@ -23,7 +23,7 @@ const App = () => {
           polygon_threshold: "0.0",
         },
         headers: {
-          "X-RapidAPI-Key": process.env.REACT_APP_GEOCODE_CONVERTER_KEY,
+          "X-RapidAPI-Key": `${process.env.REACT_APP_GEOCODE_CONVERTER_KEY}`,
           "X-RapidAPI-Host": "forward-reverse-geocoding.p.rapidapi.com",
         },
       };
