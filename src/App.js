@@ -3,25 +3,39 @@ import * as tt from "@tomtom-international/web-sdk-maps";
 import * as ttapi from "@tomtom-international/web-sdk-services";
 import "./App.css";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
-// const NodeGeocoder = require("node-geocoder");
-
-// setting use node-geocoder in order to access long and lat for addresses
-// const options = {
-//   provider: "google",
-
-//   // Optional depending on the providers
-//   fetch: customFetchImplementation,
-//   apiKey: process.env.MAPQUEST_NODE_GEOCODER_API_KEY, // for Mapquest, OpenCage, Google Premier
-//   formatter: null, // 'gpx', 'string', ...
-// };
-// const geocoder = NodeGeocoder(options);
+import axios from "axios";
 
 const App = () => {
   const mapElement = useRef();
   const [map, setMap] = useState({});
   const [longitude, setLongitude] = useState(-121.082359);
   const [latitude, setLatitude] = useState(38.70248);
-  const [address, setAddress] = useState("171 Promontory Point Court");
+  const [address, setAddress] = useState("");
+
+  const convertAddress = async () => {
+    const options = {
+      method: "GET",
+      url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/search",
+      params: {
+        q: `${address}`,
+        "accept-language": "en",
+        polygon_threshold: "0.0",
+      },
+      headers: {
+        "X-RapidAPI-Key": process.env.REACT_APP_GEOCODE_CONVERTER_KEY,
+        "X-RapidAPI-Host": process.env.REACT_APP_GEOCODE_CONVERTER_HOST,
+      },
+    };
+    axios
+      .request(options)
+      .then(function (response) {
+        setLatitude(response.data[0].lat);
+        setLongitude(response.data[0].lon);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
 
   const convertToPoints = (lngLat) => {
     return {
@@ -169,39 +183,22 @@ const App = () => {
       {map && (
         <div className="app">
           <div ref={mapElement} className="map" />
-          <div className="search-bar-container">
-            <div className="search-bar-title">
-              <h1>Where to?</h1>
-            </div>
-            {/* <div className="search-bar-input"> */}
-            {/* <input
-                type="text"
-                id="address"
-                className="address"
-                placeholder="Put in Address"
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-              /> */}
+          <div className="search-container">
             <div className="search-bar-input">
               <input
                 type="text"
-                id="longitude"
-                className="longitude"
-                placeholder="Put in Longitude"
+                id="address"
+                className="address-input"
+                placeholder="Search Maps"
                 onChange={(e) => {
-                  setLongitude(e.target.value);
+                  setAddress(e.target.value);
                 }}
               />
-              <input
-                type="text"
-                id="latitude"
-                className="latitude"
-                placeholder="Put in latitude"
-                onChange={(e) => {
-                  setLatitude(e.target.value);
-                }}
-              />
+            </div>
+            <div className="button-container">
+              <button onClick={convertAddress} className="search-button">
+                Search
+              </button>
             </div>
           </div>
         </div>
