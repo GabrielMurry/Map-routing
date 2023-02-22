@@ -13,28 +13,27 @@ const App = () => {
   const [address, setAddress] = useState("");
 
   const convertAddress = async () => {
-    const options = {
-      method: "GET",
-      url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/search",
-      params: {
-        q: `${address}`,
-        "accept-language": "en",
-        polygon_threshold: "0.0",
-      },
-      headers: {
-        "X-RapidAPI-Key": process.env.REACT_APP_GEOCODE_CONVERTER_KEY,
-        "X-RapidAPI-Host": "forward-reverse-geocoding.p.rapidapi.com",
-      },
-    };
-    axios
-      .request(options)
-      .then(function (response) {
+    try {
+      const options = {
+        method: "GET",
+        url: "https://forward-reverse-geocoding.p.rapidapi.com/v1/search",
+        params: {
+          q: `${address}`,
+          "accept-language": "en",
+          polygon_threshold: "0.0",
+        },
+        headers: {
+          "X-RapidAPI-Key": process.env.REACT_APP_GEOCODE_CONVERTER_KEY,
+          "X-RapidAPI-Host": "forward-reverse-geocoding.p.rapidapi.com",
+        },
+      };
+      await axios.request(options).then(function (response) {
         setLatitude(response.data[0].lat);
         setLongitude(response.data[0].lon);
-      })
-      .catch(function (error) {
-        console.error(error);
       });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const convertToPoints = (lngLat) => {
