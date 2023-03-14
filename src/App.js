@@ -97,9 +97,7 @@ const App = () => {
       const popupOffset = {
         bottom: [0, -25],
       };
-      const popup = new tt.Popup({ offset: popupOffset }).setHTML(
-        "This is you!"
-      );
+      const popup = new tt.Popup({ offset: popupOffset }).setHTML("You");
       const element = document.createElement("div");
       element.className = "marker";
 
@@ -183,22 +181,18 @@ const App = () => {
         <div className="app">
           <div ref={mapElement} className="map" />
           <div className="search-container">
-            <div className="search-bar-input">
-              <input
-                type="text"
-                id="address"
-                className="address-input"
-                placeholder="Search Maps"
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-              />
-            </div>
-            <div className="button-container">
-              <button onClick={convertAddress} className="search-button">
-                Search
-              </button>
-            </div>
+            <input
+              type="text"
+              id="address"
+              className="address-input"
+              placeholder="Search Maps"
+              onChange={(e) => {
+                setAddress(e.target.value);
+              }}
+            />
+            <button onClick={convertAddress} className="search-button">
+              Search
+            </button>
           </div>
         </div>
       )}
